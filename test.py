@@ -19,9 +19,9 @@ def judge(language, problem):
     cmd = cmd_dict[language]
     test_home = '../test/' + problem
 
-    count =0
     sample_file_list = read(test_home + '/list.txt').split('\n')
 
+    WA = False
 
     for index, sample_file in enumerate(sample_file_list, 1):
         input_file = test_home + '/in/' + sample_file
@@ -31,10 +31,10 @@ def judge(language, problem):
         expected = read(output_file)
 
         if expected != actual:
-            count += 1
             print_diff(input_file, index, expected, actual)
+            WA |= True
 
-    if count == len(sample_list):
+    if not WA:
         print('AC')
 
 def execute(cmd, input_file):
