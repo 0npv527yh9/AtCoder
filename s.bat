@@ -1,2 +1,2 @@
 @echo off
-type ..\src\Main.java | clip
+python submission.py %1 %2 %3

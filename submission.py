@@ -3,52 +3,43 @@ from bs4 import BeautifulSoup
 import sys
 from login import login
 
-def submit(session, url, problem):
-    # csrf_token取得
-    r = session.get(url)
-    s = BeautifulSoup(r.text, 'lxml')
-    csrf_token = s.find(attrs={'name': 'csrf_token'}).get('value')
+language_id_dict = {
+       'c': '4001',
+     'cpp': '4003',
+    'java': '4005',
+      'py': '4006'
+}
+
+def main(args):
+    language = args[1]
+    contest = args[2]
+    problem = contest + '_' + args[3]
+    url = 'https://atcoder.jp/contests/{0}/submit'.format(contest)
+    submit(url, language, problem)
+
+def submit(url, language, problem):
+    session = requests.session()
+    csrf_token = login(session)
 
     # source code
-    with open('D:/Software/atcoder/src/Main.java') as f:
-        source = f.read()
+    file = 'D:/Software/atcoder/src/main.' + language
+    with open(file) as f:
+        code = f.read()
 
     # submission data
     data = {
-        "csrf_token": csrf_token,
-        "data.TaskScreenName": problem,
-        "data.LanguageId": "4005",
-        "sourceCode": source
+        'data.TaskScreenName': problem,
+        'data.LanguageId': language_id_dict[language],
+        'sourceCode': code,
+        'csrf_token': csrf_token
     }
 
     # submit
-    result = session.post(url, data=data)
-    result.raise_for_status()
-    if result.status_code==200:
-      print("success!")
-    else:
-      print("failed...")
+    print('Submit...', end = ' ')
+    res = session.post(url, data)
 
-def submit(url, code):
-    session = login()
-    res = session.get(url)
-    BeautifulSoup(res.text, '')
-
-    # submission data
-    data = {
-        "csrf_token": csrf_token,
-        "data.TaskScreenName": problem,
-        "data.LanguageId": "4005",
-        "sourceCode": code
-    }
-
-def main():
-    session = login()
-    contest = sys.argv[1]
-    problem = contest + '_' + sys.argv[2]
-    url = 'https://atcoder.jp/contests/{0}/submit'.format(contest)
-
-    submit(session, url, problem)
+    message = 'OK!' if res.status_code == 200 else 'Failed.'
+    print(message)
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv)

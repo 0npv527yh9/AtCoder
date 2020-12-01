@@ -1,10 +1,11 @@
 import subprocess
 import sys
 
-cmd_dict = \
-    {  'java': 'java -cp ../build Main',
-     'python': 'python ../src/main.py',
-          'c': '../build/a.exe'}
+cmd_dict = {
+    'java': 'java -cp ../build Main',
+      'py': 'python ../src/main.py',
+       'c': '../build/a.exe'
+}
 
 def main(args):
     language = args[1]

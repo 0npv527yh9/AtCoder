@@ -14,3 +14,5 @@ def login(session):
 
     message = 'OK!' if res.status_code == 200 else 'Failed.'
     print(message)
+
+    return csrf_token
