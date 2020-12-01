@@ -31,7 +31,8 @@ def judge(language, problem):
         expected = read(output_file)
 
         if expected != actual:
-            print_diff(input_file, expected, actual)
+            input_ = read(input_file)
+            print_diff(sample_file, input_, expected, actual)
             WA |= True
 
     if not WA:
@@ -45,14 +46,20 @@ def execute(cmd, input_file):
     except:
         exit(0)
 
-def print_diff(input_file, index, expected, actual):
-    index = str(index)
-    input_file = read(input_file)
+def print_diff(file, input_, expected, actual):
+    title_tuple = ('input', 'expected', 'actual')
+    content_tuple = (input_, expected, actual)
+    
+    print(make_title(file, '='))
+    for title, content in zip(title_tuple, content_tuple):
+        print(make_title(title), content, sep = '\n')
+    print('\n')
 
-    hi = '-' * 11 + 'input' + index + '-' * 12
-    he = '-' * 10 + 'expected' + index + '-' * 10
-    ha = '-' * 11 + 'actual' + index + '-' * 11
-    print(hi, input_file, he, expected, ha, actual, sep = '\n', end = '\n\n')
+def make_title(title, style = '-', width = 30):
+    w = max(0, width - len(title))
+    l = w // 2
+    r = w - l
+    return style * l + title + style * r
 
 if __name__ == '__main__':
     main(sys.argv)
