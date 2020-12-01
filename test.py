@@ -46,12 +46,13 @@ def execute(cmd, input_file):
         exit(0)
 
 def print_diff(input_file, index, expected, actual):
+    index = str(index)
     input_file = read(input_file)
 
     hi = '-' * 11 + 'input' + index + '-' * 12
     he = '-' * 10 + 'expected' + index + '-' * 10
     ha = '-' * 11 + 'actual' + index + '-' * 11
-    print(hi, sample_input, he, expected, ha, actual, sep = '\n', end = '\n\n')
+    print(hi, input_file, he, expected, ha, actual, sep = '\n', end = '\n\n')
 
 if __name__ == '__main__':
     main(sys.argv)
