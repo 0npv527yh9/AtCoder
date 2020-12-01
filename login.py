@@ -1,25 +1,16 @@
-def login():
-    # セッション開始
-    session = requests.session()
+from bs4 import BeautifulSoup
+import config
 
-    LOGIN_URL = "https://atcoder.jp/login"
+def login(session):
+    url = 'https://atcoder.jp/login'
 
-    # csrf_token取得
-    r = session.get(LOGIN_URL)
-    s = BeautifulSoup(r.text, 'lxml')
-    csrf_token = s.find(attrs={'name': 'csrf_token'}).get('value')
+    print('Login...', end = ' ')
+    res = session.get(url)
+    bs = BeautifulSoup(res.text, 'lxml')
+    csrf_token = bs.select_one("[name = 'csrf_token']").get('value')
+    config.login_data['csrf_token'] = csrf_token
 
-    # パラメータセットses
-    login_info = {
-        "csrf_token": csrf_token,
-        "username": "yama2019",
-        "password": "r9N6VAmd4CpDBYikU3wL"
-    }
+    res = session.post(url, config.login_data)
 
-    result = session.post(LOGIN_URL, data=login_info)
-    result.raise_for_status()
-    if result.status_code==200:
-      print("log in!")
-    else:
-      print("failed...")
-    return session
+    message = 'OK!' if res.status_code == 200 else 'Failed.'
+    print(message)
