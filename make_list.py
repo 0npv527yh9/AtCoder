@@ -1,6 +1,10 @@
 import os
 import sys
 
+def main(args):
+    for problem in args[1]:
+        make_list(problem.upper())
+
 def make_list(problem):
     path = '../test/{}'.format(problem)
     file_name_list = os.listdir(path + '/in')
@@ -9,4 +13,4 @@ def make_list(problem):
         f.write('\n'.join(sorted(file_name_list)))
 
 if __name__ == '__main__':
-    make_list(sys.argv[1])
+    main(sys.argv)
