@@ -11,10 +11,6 @@ def main(args):
     problem = args[2].upper()
     judge(language, problem)
 
-def read(file):
-    with open(file) as f:
-        return f.read().strip()
-
 def judge(language, problem):
     cmd = cmd_dict[language]
     test_home = '../test/' + problem
@@ -33,10 +29,14 @@ def judge(language, problem):
         if expected != actual:
             input_ = read(input_file)
             print_diff(sample_file, input_, expected, actual)
-            WA |= True
+            WA = True
 
     if not WA:
         print('AC')
+
+def read(file):
+    with open(file) as f:
+        return f.read().strip()
 
 def execute(cmd, input_file):
     try:
@@ -49,7 +49,7 @@ def execute(cmd, input_file):
 def print_diff(file, input_, expected, actual):
     title_tuple = ('input', 'expected', 'actual')
     content_tuple = (input_, expected, actual)
-    
+
     print(make_title(file, '='))
     for title, content in zip(title_tuple, content_tuple):
         print(make_title(title), content, sep = '\n')
