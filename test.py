@@ -23,15 +23,15 @@ def judge(language, problem):
 
     WA = False
 
-    for index, sample_file in enumerate(sample_file_list, 1):
+    for sample_file in sample_file_list:
         input_file = test_home + '/in/' + sample_file
-        actual = execute(cmd, input_file)
-
         output_file = test_home + '/out/' + sample_file
+
+        actual = execute(cmd, input_file)
         expected = read(output_file)
 
         if expected != actual:
-            print_diff(input_file, index, expected, actual)
+            print_diff(input_file, expected, actual)
             WA |= True
 
     if not WA:
