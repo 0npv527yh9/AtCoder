@@ -39,7 +39,9 @@ def judge(language, problem):
 
 def execute(cmd, input_file):
     try:
-        return subprocess.check_output(cmd, stdin = open(input_file)).decode().strip().replace('\r', '')
+        byte_res = subprocess.check_output(cmd, stdin = open(input_file))
+        str_res = byte_res.decode().strip().replace('\r', '')
+        return str_res
     except:
         exit(0)
 
