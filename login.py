@@ -1,17 +1,20 @@
 from bs4 import BeautifulSoup
-import config
+from config import login_data
+
+url = 'https://atcoder.jp/login'
 
 def login(session):
-    url = 'https://atcoder.jp/login'
-
+    # get csrf_token
     print('Login...', end = ' ')
     res = session.get(url)
     bs = BeautifulSoup(res.text, 'lxml')
     csrf_token = bs.select_one("[name = 'csrf_token']").get('value')
-    config.login_data['csrf_token'] = csrf_token
+    login_data['csrf_token'] = csrf_token
 
-    res = session.post(url, config.login_data)
+    # post login data
+    res = session.post(url, login_data)
 
+    # check response
     message = 'OK!' if res.status_code == 200 else 'Failed.'
     print(message)
 
