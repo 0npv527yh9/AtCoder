@@ -3,8 +3,8 @@ import sys
 from config import language_dict
 
 def main(args):
-    language = args[1]
-    problem = args[2].upper()
+    problem = args[1].upper()
+    language = args[2]
     test(problem, language)
 
 def test(problem, language):
