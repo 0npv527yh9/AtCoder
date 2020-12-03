@@ -1,7 +1,7 @@
 import sys
+import subprocess
 from config import language_dict
 
-import subprocess
 
 def main(args):
     language = args[1]
@@ -11,7 +11,7 @@ def compile(language):
     command = language_dict[language]['compile']
     if command:
         try:
-            subprocess.check_call(command)
+            subprocess.run(command, check = True)
         except:
             sys.exit(1)
 
