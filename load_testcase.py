@@ -1,14 +1,14 @@
+import sys
 import requests
 from bs4 import BeautifulSoup
-import sys
-from login import login
+import login
 
 def main(args):
     contest = args[1]
     problems = 'ABCDEF' if args[2] == '-' else args[2]
     session = requests.session()
     if args[3] == 'y':
-        login(session)
+        login.login(session)
 
     url = 'https://atcoder.jp/contests/{0}/tasks/{0}_'.format(contest)
 
@@ -18,13 +18,13 @@ def main(args):
 def load_problem(session, url, problem):
     test_home = '../test/' + problem
 
-    parts = get_soup(session, url + problem.lower()).select('.part')
+    parts = create_soup(session, url + problem.lower()).select('.part')
     num = extract_and_output(parts, '入力例', test_home + '/in')
     extract_and_output(parts, '出力例', test_home + '/out')
 
     make_list(num, test_home)
 
-def get_soup(session, url):
+def create_soup(session, url):
     return BeautifulSoup(session.get(url).text, 'lxml')
 
 def extract_and_output(result_set, title, path):
