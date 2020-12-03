@@ -1,2 +1,2 @@
 @echo off
-gcc ..\src\main.c -o ..\build\a.exe && python test.py c %1
+python atcoder.py %contest% %1 C

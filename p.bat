@@ -1,2 +1,2 @@
 @echo off
-python test.py python %1
+python atcoder.py %contest% %1 Python

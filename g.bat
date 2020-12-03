@@ -1,2 +1,2 @@
 @echo off
-g++ ..\src\main.cpp -o ..\build\a.exe && python test.py c %1
+python atcoder.py %contest% %1 C++

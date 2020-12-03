@@ -1,2 +1,2 @@
 @echo off
-javac -d ..\build ..\src\Main.java && python test.py java %1
+python atcoder.py %contest% %1 Java
