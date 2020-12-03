@@ -1,19 +1,13 @@
 import subprocess
 import sys
-
-cmd_dict = {
-    'java': 'java -cp ../build Main',
-      'py': 'python ../src/main.py',
-       'c': '../build/a.exe'
-}
+from config import language_dict
 
 def main(args):
     language = args[1]
     problem = args[2].upper()
-    judge(language, problem)
+    test(problem, language)
 
-def judge(language, problem):
-    cmd = cmd_dict[language]
+def test(problem, language):
     test_home = '../test/' + problem
 
     sample_file_list = read(test_home + '/list.txt').split('\n')
@@ -24,7 +18,7 @@ def judge(language, problem):
         input_file = test_home + '/in/' + sample_file
         output_file = test_home + '/out/' + sample_file
 
-        actual = execute(cmd, input_file)
+        actual = execute(language, input_file)
         expected = read(output_file)
 
         if expected != actual:
@@ -32,20 +26,28 @@ def judge(language, problem):
             print_diff(sample_file, input_, expected, actual)
             WA = True
 
-    if not WA:
+    if WA:
+        sys.exit(1)
+    else:
         print('AC')
 
 def read(file):
     with open(file) as f:
         return f.read().strip()
 
-def execute(cmd, input_file):
+def execute(language, input_file):
     try:
-        byte_res = subprocess.check_output(cmd, stdin = open(input_file))
-        str_res = byte_res.decode().strip().replace('\r', '')
+        command = language_dict[language]['execute']
+        option = {
+            'stdin': open(input_file),
+            'stdout': subprocess.PIPE,
+            'check': True
+        }
+        byte_res = subprocess.run(command, **option).stdout.strip()
+        str_res = byte_res.decode().replace('\r', '')
         return str_res
     except:
-        exit(0)
+        sys.exit(1)
 
 def print_diff(file, input_, expected, actual):
     title_tuple = ('input', 'expected', 'actual')
