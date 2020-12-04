@@ -5,7 +5,7 @@ import login
 
 def main(args):
     contest = args[1]
-    problems = 'ABCDEF' if args[2] == '-' else args[2]
+    problems = 'ABCDEF' if args[2] == '' else args[2]
     session = requests.session()
     if args[3] == 'y':
         login.login(session)
@@ -27,7 +27,7 @@ def load_problem(session, url, problem):
 
 def create_soup(session, url):
     try:
-        res = requests.get(url)
+        res = session.get(url)
         res.raise_for_status()
         return BeautifulSoup(res.text, 'lxml')
     except:
