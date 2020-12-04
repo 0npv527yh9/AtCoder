@@ -23,6 +23,7 @@ def load_problem(session, url, problem):
     extract_and_output(parts, '出力例', test_home + '/out')
 
     make_list(num, test_home)
+    print(problem, num)
 
 def create_soup(session, url):
     return BeautifulSoup(session.get(url).text, 'lxml')
