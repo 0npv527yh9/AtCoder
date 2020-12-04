@@ -26,7 +26,13 @@ def load_problem(session, url, problem):
     print(problem, num)
 
 def create_soup(session, url):
-    return BeautifulSoup(session.get(url).text, 'lxml')
+    try:
+        res = requests.get(url)
+        res.raise_for_status()
+        return BeautifulSoup(res.text, 'lxml')
+    except:
+        print('URL is wrong', url, sep = '\n')
+        sys.exit(0)
 
 def extract_and_output(result_set, title, path):
     sample_iter = extract_sample(result_set, title)
