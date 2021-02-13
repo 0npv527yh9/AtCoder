@@ -1,10 +1,10 @@
-import subprocess
 import sys
+import subprocess
 from config import language_dict
 
 def main(args):
     problem = args[1].upper()
-    language = args[2]
+    language = args[2].lower()
     test(problem, language)
 
 def test(problem, language):
@@ -27,7 +27,7 @@ def test(problem, language):
             WA = True
 
     if WA:
-        sys.exit(1)
+        sys.exit(0)
     else:
         print('AC')
 
@@ -36,33 +36,32 @@ def read(file):
         return f.read().strip()
 
 def execute(language, input_file):
-    try:
-        command = language_dict[language]['execute']
-        option = {
-            'stdin': open(input_file),
-            'stdout': subprocess.PIPE,
-            'check': True
-        }
-        byte_res = subprocess.run(command, **option).stdout.strip()
-        str_res = byte_res.decode().replace('\r', '')
-        return str_res
-    except:
-        sys.exit(1)
+    command = language_dict[language]['execute']
+    option = {
+        'stdin': open(input_file),
+        'capture_output': True
+    }
+    res = subprocess.run(command, **option)
+    byte_res = res.stderr if res.returncode else res.stdout
+    str_res = res.strip().decode().replace('\r', '')
+    return str_res
 
 def print_diff(file, input_, expected, actual):
     title_tuple = ('input', 'expected', 'actual')
     content_tuple = (input_, expected, actual)
 
-    print(make_title(file, '='))
+    print_title(file, '=')
     for title, content in zip(title_tuple, content_tuple):
-        print(make_title(title), content, sep = '\n')
+        print_title(title)
+        print(content)
     print('\n')
 
-def make_title(title, style = '-', width = 30):
+def print_title(title, style = '-', width = 30):
     w = max(0, width - len(title))
     l = w // 2
     r = w - l
-    return style * l + title + style * r
+    s = style * l + title + style * r
+    print(s)
 
 if __name__ == '__main__':
     main(sys.argv)
