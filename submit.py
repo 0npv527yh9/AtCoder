@@ -1,15 +1,16 @@
 import sys
 import requests
 import login
-from config import language_dict, source_path
+from config import language_dict, source_path, title, prefix
 
 def main(args):
-    contest = args[1]
-    problem = args[2]
-    language = args[3]
-    submit(contest, problem, language)
+    problem = args[1]
+    language = args[2]
 
-def submit(contest, problem, language):
+    submit(problem, language)
+    open_submissions_page()
+
+def submit(problem, language):
     # session for submission
     session = requests.session()
     csrf_token = login.login(session)
@@ -21,7 +22,7 @@ def submit(contest, problem, language):
 
     # submission data
     data = {
-        'data.TaskScreenName': contest + '_' + problem,
+        'data.TaskScreenName': prefix + '_' + problem,
         'data.LanguageId': language_dict[language]['id'],
         'sourceCode': code,
         'csrf_token': csrf_token
@@ -29,12 +30,16 @@ def submit(contest, problem, language):
 
     # submit
     print('Submit...', end = ' ')
-    url = 'https://atcoder.jp/contests/{}/submit'.format(contest)
+    url = f'https://atcoder.jp/contests/{title}/submit'
     res = session.post(url, data)
 
     # check response
     message = 'OK!' if res.status_code == 200 else 'Failed.'
     print(message)
+
+def open_submissions_page():
+    url = f'https://atcoder.jp/contests/{title}/submissions/me'
+    browser.open(url)
 
 if __name__ == '__main__':
     main(sys.argv)
