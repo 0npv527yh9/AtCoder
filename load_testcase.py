@@ -62,7 +62,7 @@ def extract_and_output(result_set, title, path):
 def extract_sample(result_set, title):
     match_title = lambda e : title == e.select_one('h3').text[:len(title)]
     data = filter(match_title, result_set)
-    extract_sample = lambda e : e.select_one('pre').text.strip()
+    extract_sample = lambda e : e.select_one('pre').text.strip().replace('\r', '')
     return map(extract_sample, data)
 
 def output_sample(sample_iter, path):
