@@ -33,8 +33,12 @@ def submit(problem, language):
     res = session.post(url, data)
 
     # check response
-    message = 'OK!' if res.status_code == 200 else 'Failed.'
-    print(message)
+    try:
+        res.raise_for_status()
+        print('OK!')
+    except Exception as e:
+        print('Failed.')
+        print(e)
 
     # the browser opens submissions page
     open_submissions_page()
