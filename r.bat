@@ -1,2 +1,2 @@
 @echo off
-python atcoder.py %1 Rust "%2"
+python atcoder.py %1 rust "%2"
