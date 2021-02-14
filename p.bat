@@ -1,2 +1,2 @@
 @echo off
-python atcoder.py %1 Python "%2"
+python atcoder.py %1 python "%2"
