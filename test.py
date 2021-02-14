@@ -43,7 +43,7 @@ def execute(language, input_file):
     }
     res = subprocess.run(command, **option)
     byte_res = res.stderr if res.returncode else res.stdout
-    str_res = res.strip().decode().replace('\r', '')
+    str_res = byte_res.strip().decode().replace('\r', '')
     return str_res
 
 def print_diff(file, input_, expected, actual):
