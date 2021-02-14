@@ -8,7 +8,6 @@ def main(args):
     language = args[2]
 
     submit(problem, language)
-    open_submissions_page()
 
 def submit(problem, language):
     # session for submission
@@ -36,6 +35,9 @@ def submit(problem, language):
     # check response
     message = 'OK!' if res.status_code == 200 else 'Failed.'
     print(message)
+
+    # the browser opens submissions page 
+    open_submissions_page()
 
 def open_submissions_page():
     url = f'https://atcoder.jp/contests/{title}/submissions/me'
