@@ -1,19 +1,39 @@
 import sys
+from time import sleep
+
 import requests
 from bs4 import BeautifulSoup
+
 import login
+from config import register_contest
 
 def main(args):
-    contest = args[1]
-    problems = 'ABCDEF' if args[2] == '' else args[2]
+    title = args[1]
+    problems = args[2]
     session = requests.session()
-    if args[3] == 'y':
+
+    needs_login = False
+    prefix = title.replace('-', '_')
+
+    i = 3
+    while i < len(args):
+        if args[i] == '-l':
+            needs_login = True
+        elif args[i] == '-p':
+            i += 1
+            prefix = args[i]
+        i += 1
+
+    if needs_login:
         login.login(session)
 
-    url = 'https://atcoder.jp/contests/{0}/tasks/{0}_'.format(contest)
+    url = f'https://atcoder.jp/contests/{title}/tasks/{prefix}_'
 
     for problem in problems.upper():
         load_problem(session, url, problem)
+        sleep(2)
+
+    register_contest(title, prefix)
 
 def load_problem(session, url, problem):
     test_home = '../test/' + problem
@@ -30,9 +50,9 @@ def create_soup(session, url):
         res = session.get(url)
         res.raise_for_status()
         return BeautifulSoup(res.text, 'lxml')
-    except:
-        print('URL is wrong', url, sep = '\n')
-        sys.exit(0)
+    except Exception as e:
+        print(e)
+        sys.exit(res.status_code)
 
 def extract_and_output(result_set, title, path):
     sample_iter = extract_sample(result_set, title)
@@ -40,20 +60,23 @@ def extract_and_output(result_set, title, path):
     return num
 
 def extract_sample(result_set, title):
-    data = filter(lambda e : title == e.select_one('h3').text[:len(title)], result_set)
-    return map(lambda e : e.select_one('pre').text.replace('\r', ''), data)
+    match_title = lambda e : title == e.select_one('h3').text[:len(title)]
+    data = filter(match_title, result_set)
+    extract_sample = lambda e : e.select_one('pre').text.strip()
+    return map(extract_sample, data)
 
 def output_sample(sample_iter, path):
     for i, sample in enumerate(sample_iter, 1):
-        file = '{}/{}.txt'.format(path, i)
+        file = f'{path}/{i}.txt'
         with open(file, 'w', newline = '\n') as f:
             f.write(sample)
     return i
 
 def make_list(count, path):
     sample_list = list(str(i) + '.txt' for i in range(1, count + 1))
+    sample_list_str = '\n'.join(sample_list)
     with open(path + '/list.txt', 'w') as f:
-        f.write('\n'.join(sample_list))
+        f.write(sample_list_str)
 
 if __name__ == '__main__':
     main(sys.argv)
