@@ -1,2 +1,2 @@
 @echo off
-python atcoder.py %contest% %1 C "%2"
+python atcoder.py %contest% %1 c "%2"
