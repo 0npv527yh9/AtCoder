@@ -1,7 +1,7 @@
 import sys
 import requests
 import login
-from config import language_dict, source_path, title, prefix
+from config import language_dict, source_path, title, prefix, browser
 
 def main(args):
     problem = args[1]
@@ -36,7 +36,7 @@ def submit(problem, language):
     message = 'OK!' if res.status_code == 200 else 'Failed.'
     print(message)
 
-    # the browser opens submissions page 
+    # the browser opens submissions page
     open_submissions_page()
 
 def open_submissions_page():
