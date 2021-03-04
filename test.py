@@ -53,7 +53,7 @@ def print_diff(file, input_, expected, actual):
     print_title(file, '=')
     for title, content in zip(title_tuple, content_tuple):
         print_title(title)
-        print(content)
+        print(trim(content))
     print('\n')
 
 def print_title(title, style = '-', width = 30):
@@ -62,6 +62,14 @@ def print_title(title, style = '-', width = 30):
     r = w - l
     s = style * l + title + style * r
     print(s)
+
+def trim(s, row = 30):
+    l = s.split('\n')
+    if row < len(l):
+        h = row >> 1
+        l = l[:h] + ['...'] + l[-h:]
+        s = '\n'.join(l)
+    return s
 
 if __name__ == '__main__':
     main(sys.argv)
