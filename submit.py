@@ -1,7 +1,8 @@
 import sys
 import requests
 import login
-from config import language_dict, source_path, title, prefix, browser
+from config import language_dict, source_path, title, prefix
+import webbrowser
 
 def main(args):
     problem = args[1]
@@ -45,7 +46,7 @@ def submit(problem, language):
 
 def open_submissions_page():
     url = f'https://atcoder.jp/contests/{title}/submissions/me'
-    browser.open(url)
+    webbrowser.open(url)
 
 if __name__ == '__main__':
     main(sys.argv)
