@@ -1,6 +1,7 @@
 @echo off
-cd D:\Software\atcoder\test\%1
-7z x %1.zip
-del %1.zip
+cd ..\test\%1
+del * /S /Q > nul
+7z x ..\%1.zip
+del ..\%1.zip
 call ac
 call m %1
