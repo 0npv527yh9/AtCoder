@@ -1,5 +1,8 @@
 import sys
 from time import sleep
+from os.path import exists
+from os import mkdir
+from shutil import rmtree
 
 import requests
 from bs4 import BeautifulSoup
@@ -37,6 +40,9 @@ def main(args):
 
 def load_problem(session, url, problem):
     test_home = '../test/' + problem
+    if exists(test_home):
+        rmtree(test_home)
+    mkdir(test_home)
 
     parts = create_soup(session, url + problem.lower()).select('.part')
     num = extract_and_output(parts, '入力例', test_home + '/in')
@@ -66,6 +72,7 @@ def extract_sample(result_set, title):
     return map(extract_sample, data)
 
 def output_sample(sample_iter, path):
+    mkdir(path)
     for i, sample in enumerate(sample_iter, 1):
         file = f'{path}/{i}.txt'
         with open(file, 'w', newline = '\n') as f:
@@ -73,9 +80,9 @@ def output_sample(sample_iter, path):
     return i
 
 def make_list(count, path):
-    sample_list = list(str(i) + '.txt' for i in range(1, count + 1))
+    sample_list = list(f'{i}.txt' for i in range(1, count + 1))
     sample_list_str = '\n'.join(sample_list)
-    with open(path + '/list.txt', 'w') as f:
+    with open(f'{path}/list.txt', 'w') as f:
         f.write(sample_list_str)
 
 if __name__ == '__main__':
