@@ -66,7 +66,7 @@ def print_title(title, style = '-', width = 30):
 def trim(s, row = 30, col = 30):
     l = s.split('\n')
     h = row >> 1
-    l = l if row < len(l) else l[:h] + ['...'] + l[-h:]
+    l = l[:h] + ['...'] + l[-h:] if row < len(l) else l
     w = col >> 1
     l = list(map(lambda s : s if col >= len(s) else s[:w] + '...' + s[-w:], l))
     s = '\n'.join(l)
