@@ -63,12 +63,13 @@ def print_title(title, style = '-', width = 30):
     s = style * l + title + style * r
     print(s)
 
-def trim(s, row = 30):
+def trim(s, row = 30, col = 30):
     l = s.split('\n')
-    if row < len(l):
-        h = row >> 1
-        l = l[:h] + ['...'] + l[-h:]
-        s = '\n'.join(l)
+    h = row >> 1
+    l = l if row < len(l) else l[:h] + ['...'] + l[-h:]
+    w = col >> 1
+    l = list(map(lambda s : s if col >= len(s) else s[:w] + '...' + s[-w:], l))
+    s = '\n'.join(l)
     return s
 
 if __name__ == '__main__':
