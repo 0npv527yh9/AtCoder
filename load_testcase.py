@@ -1,20 +1,15 @@
 import sys
-from time import sleep, time
 from os.path import exists
 from os import mkdir
 from shutil import rmtree
 import re
 
-from bs4 import BeautifulSoup
-
-from login import login
-from config import register_contest, session
-
-timestamp = 0
-INTERVAL = 2
+from config import register_contest
+from my_requests import AtCoderSession
 
 def main(args):
     url = args[1]
+    session = AtCoderSession()
     url, title, prefix = extract_contest_data(session, url)
     register_contest(title, prefix)
 
@@ -26,7 +21,6 @@ def extract_contest_data(session, url):
     task_page_pattern = f'{top_page_pattern}/tasks/(.+)_.+'
     if (m := re.fullmatch(top_page_pattern, url)):
         title = m.groups()[0]
-        # login(session)
         prefix = load_prefix(session, f'{url}/tasks')
         url = f'{url}/tasks_print'
     elif (m := re.fullmatch(task_page_pattern, url)):
@@ -40,28 +34,15 @@ def extract_contest_data(session, url):
     return url, title, prefix
 
 def load_prefix(session, url):
-    bs = create_soup(session, url)
-    url = bs.find('h2').parent.a.get('href')
+    session.get(url)
+    url = session.soup.find('h2').parent.a.get('href')
     prefix = re.findall('([^/]+)_', url)[0]
     return prefix
 
 def load_tasks(session, url):
-    bs = create_soup(session, url)
-    tasks = extract_tasks(bs)
+    session.get(url)
+    tasks = extract_tasks(session.soup)
     return tasks
-
-def create_soup(session, url):
-    stamp()
-    res = session.get(url)
-    res.raise_for_status()
-    return BeautifulSoup(res.text, 'lxml')
-
-def stamp():
-    global timestamp
-    t = time()
-    wait = max(0, INTERVAL - (t - timestamp))
-    sleep(wait)
-    timestamp = t
 
 def save_tasks(tasks):
     loaded = []
@@ -76,16 +57,15 @@ def save_tasks(tasks):
     print('loaded:', *loaded)
     print('failed:', *failed)
 
-def extract_tasks(bs):
-    titles = bs.find_all('span', class_ = 'h2')
+def extract_tasks(soup):
+    titles = soup.find_all('span', class_ = 'h2')
     tasks = tuple(map(lambda title : title.parent, titles))
     return tasks
 
 def extract_samples(task):
     title = task.span.text.strip()[0]
     samples = task.find_all(string = re.compile('(入|出)力例 *[0-9]'))
-    samples = map(extract_sample, samples)
-    samples = tuple(samples)
+    samples = tuple(map(extract_sample, samples))
     samples = tuple(zip(samples[::2], samples[1::2]))
     return title, samples
 
