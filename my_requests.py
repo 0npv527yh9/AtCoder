@@ -14,7 +14,7 @@ class AtCoderSession(Session):
     def __init__(self, login = False):
         super().__init__()
         self.__timestamp = 0
-        self.__soup = None
+        self.soup = None
         if login:
             self.__login()
         else:
@@ -27,7 +27,7 @@ class AtCoderSession(Session):
 
     def __load_csrf_token(self):
         self.get(AtCoderSession.__LOGIN_URL)
-        csrf_token = self.__soup.find(attrs = {'name': 'csrf_token'}).get('value')
+        csrf_token = self.soup.find(attrs = {'name': 'csrf_token'}).get('value')
         return csrf_token
 
     def __load_cookies():
@@ -42,7 +42,7 @@ class AtCoderSession(Session):
     def get(self, url):
         self.__wait()
         res = super().get(url)
-        self.__soup = BeautifulSoup(res.text, 'lxml')
+        self.soup = BeautifulSoup(res.text, 'lxml')
         return res
 
     def __wait(self):
@@ -58,6 +58,14 @@ class AtCoderSession(Session):
         print(res.reason)
 
     def write(self, file):
-        s = str(self.__soup)
+        s = str(self.soup)
         with open(file, 'w', encoding = 'utf-8') as f:
             f.write(s)
+
+def main():
+    session = AtCoderSession()
+    session.get('https://atcoder.jp/contests/abc197/submissions/me')
+    session.write('out.html')
+
+if __name__ == '__main__':
+    main()
