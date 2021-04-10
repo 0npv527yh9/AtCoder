@@ -1,17 +1,15 @@
 import sys
-from os.path import exists
-from os import mkdir
-from shutil import rmtree
+import os
+import shutil
 import re
 
-from config import register_contest
 from my_requests import AtCoderSession
 
 def main(args):
     url = args[1]
     session = AtCoderSession()
     url, title, prefix = extract_contest_data(session, url)
-    register_contest(title, prefix)
+    save_contest_data(title, prefix)
 
     tasks = load_tasks(session, url)
     save_tasks(tasks)
@@ -32,6 +30,11 @@ def extract_contest_data(session, url):
               sep = '\n')
         exit(1)
     return url, title, prefix
+
+def save_contest_data(title, prefix):
+    s = f"title = '{title}'\nprefix = '{prefix}'"
+    with open('contest.py', 'w') as f:
+        f.write(s)
 
 def load_prefix(session, url):
     session.get(url)
@@ -75,11 +78,10 @@ def extract_sample(tag):
 
 def save_samples(title, samples):
     root = f'../test/{title}'
-    if exists(root):
-        rmtree(root)
-    mkdir(root)
-    mkdir(f'{root}/in')
-    mkdir(f'{root}/out')
+    if os.path.exists(root):
+        shutil.rmtree(root)
+    os.makedirs(f'{root}/in')
+    os.makedirs(f'{root}/out')
     for i, (in_, out) in enumerate(samples, 1):
         write(f'{root}/in/{i}.txt', in_)
         write(f'{root}/out/{i}.txt', out)
