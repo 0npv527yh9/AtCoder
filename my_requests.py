@@ -1,5 +1,6 @@
-from time import time, sleep
-from pickle import load, dump
+import time
+import pickle
+import re
 
 from requests import Session
 from bs4 import BeautifulSoup
@@ -18,26 +19,31 @@ class AtCoderSession(Session):
         if login:
             self.__login()
         else:
-            self.cookies = AtCoderSession.__load_cookies()
+            self.__load()
+
+    def __del__(self):
+        self.__save()
+        print('Session was saved.')
 
     def __login(self):
-        csrf_token = self.__load_csrf_token()
-        login_data['csrf_token'] = csrf_token
+        self.get(AtCoderSession.__LOGIN_URL)
+        self.csrf_token = self.__find_csrf_token()
+        login_data['csrf_token'] = self.csrf_token
         self.post(AtCoderSession.__LOGIN_URL, login_data)
 
-    def __load_csrf_token(self):
-        self.get(AtCoderSession.__LOGIN_URL)
-        csrf_token = self.soup.find(attrs = {'name': 'csrf_token'}).get('value')
-        return csrf_token
+    def __find_csrf_token(self):
+        return self.soup.find(attrs = {'name': 'csrf_token'}).get('value')
 
-    def __load_cookies():
+    def __load(self):
         with open(AtCoderSession.__COOKIES_PICKLE, 'rb') as f:
-            cookies = load(f)
-        return cookies
+            data = pickle.load(f)
+        self.cookies.update(data[0])
+        self.csrf_token = data[1]
 
-    def save_cookies(self):
+    def __save(self):
+        data = (self.cookies, self.csrf_token)
         with open(AtCoderSession.__COOKIES_PICKLE, 'wb') as f:
-            dump(self.cookies, f)
+            pickle.dump(data, f)
 
     def get(self, url):
         self.__wait()
@@ -46,10 +52,10 @@ class AtCoderSession(Session):
         return res
 
     def __wait(self):
-        now = time()
+        now = time.time()
         dt = now - self.__timestamp
         t = max(0, AtCoderSession.__INTERVAL - dt)
-        sleep(t)
+        time.sleep(t)
         self.__timestamp = now
 
     def post(self, url, data):
@@ -61,11 +67,3 @@ class AtCoderSession(Session):
         s = str(self.soup)
         with open(file, 'w', encoding = 'utf-8') as f:
             f.write(s)
-
-def main():
-    session = AtCoderSession()
-    session.get('https://atcoder.jp/contests/abc197/submissions/me')
-    session.write('out.html')
-
-if __name__ == '__main__':
-    main()
