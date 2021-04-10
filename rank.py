@@ -1,5 +1,6 @@
-from sys import argv
-from config import language_dict, title, prefix
+import sys
+from config import language_dict
+from contest import title, prefix
 import webbrowser
 
 def main(args):
@@ -11,4 +12,4 @@ def main(args):
     webbrowser.open(url)
 
 if __name__ == '__main__':
-    main(argv)
+    main(sys.argv)
