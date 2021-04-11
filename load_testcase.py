@@ -108,7 +108,7 @@ def make_list(count, path):
 
 def wait_before_starting(hour):
     today = datetime.today()
-    start = datetime(today.year, today.hour, today.day, hour)
+    start = datetime(today.year, today.month, today.day, hour)
     delta = start - today
     wait = delta.seconds + 2
     time.sleep(wait)
