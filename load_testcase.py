@@ -2,13 +2,22 @@ import sys
 import os
 import shutil
 import re
+import time
+from datetime import datetime
+import webbrowser
 
 from my_requests import AtCoderSession
 
 def main(args):
-    url = args[1]
     session = AtCoderSession()
+    live = len(args) == 3
+    if live:
+        start_hour = int(args[2])
+        wait_before_starting(start_hour)
+    url = args[1]
     url, title, prefix = extract_contest_data(session, url)
+    if live:
+        webbrowser.open(url)
     save_contest_data(title, prefix)
 
     tasks = load_tasks(session, url)
@@ -96,6 +105,13 @@ def make_list(count, path):
     sample_list_str = '\n'.join(sample_list)
     with open(f'{path}/list.txt', 'w') as f:
         f.write(sample_list_str)
+
+def wait_before_starting(hour):
+    today = datetime.today()
+    start = datetime(today.year, today.hour, today.day, hour)
+    delta = start - today
+    wait = delta.seconds + 2
+    time.sleep(wait)
 
 if __name__ == '__main__':
     main(sys.argv)

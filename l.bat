@@ -2,5 +2,5 @@
 if "%1" == "" (
   python login.py
 ) else (
-  python load_testcase.py %1
+  python load_testcase.py %1 %2
 )
