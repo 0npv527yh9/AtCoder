@@ -1,8 +1,9 @@
 import sys
-import requests
-import login
-from config import language_dict, source_path, title, prefix
 import webbrowser
+
+from config import language_dict, source_path
+from contest import title, prefix
+from my_requests import AtCoderSession
 
 def main(args):
     problem = args[1]
@@ -12,37 +13,32 @@ def main(args):
 
 def submit(problem, language):
     # session for submission
-    session = requests.session()
-    csrf_token = login.login(session)
+    session = AtCoderSession()
 
     # source code
-    file = '{}/main.{}'.format(source_path, language_dict[language]['extension'])
-    with open(file) as f:
-        code = f.read()
+    code = load_code(language)
 
     # submission data
     data = {
         'data.TaskScreenName': prefix + '_' + problem,
         'data.LanguageId': language_dict[language]['id'],
         'sourceCode': code,
-        'csrf_token': csrf_token
+        'csrf_token': session.csrf_token
     }
 
     # submit
-    print('Submit...', end = ' ')
     url = f'https://atcoder.jp/contests/{title}/submit'
-    res = session.post(url, data)
-
-    # check response
-    try:
-        res.raise_for_status()
-        print('OK!')
-    except Exception as e:
-        print('Failed.')
-        print(e)
+    session.post(url, data)
 
     # the browser opens submissions page
     open_submissions_page()
+
+def load_code(language):
+    extension = language_dict[language]['extension']
+    file = f'{source_path}/main.{extension}'
+    with open(file, encoding = 'utf-8') as f:
+        code = f.read()
+    return code
 
 def open_submissions_page():
     url = f'https://atcoder.jp/contests/{title}/submissions/me'

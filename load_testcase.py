@@ -1,89 +1,117 @@
 import sys
-from time import sleep
-from os.path import exists
-from os import mkdir
-from shutil import rmtree
+import os
+import shutil
+import re
+import time
+from datetime import datetime
+import webbrowser
 
-import requests
-from bs4 import BeautifulSoup
-
-import login
-from config import register_contest
+from my_requests import AtCoderSession
 
 def main(args):
-    title = args[1]
-    problems = args[2]
-    session = requests.session()
+    session = AtCoderSession()
+    live = len(args) == 3
+    if live:
+        start_hour = int(args[2])
+        wait_before_starting(start_hour)
+    url = args[1]
+    url, title, prefix = extract_contest_data(session, url)
+    if live:
+        webbrowser.open(url)
+    save_contest_data(title, prefix)
 
-    needs_login = False
-    prefix = title.replace('-', '_')
+    tasks = load_tasks(session, url)
+    save_tasks(tasks)
 
-    i = 3
-    while i < len(args):
-        if args[i] == '-l':
-            needs_login = True
-        elif args[i] == '-p':
-            i += 1
-            prefix = args[i]
-        i += 1
+def extract_contest_data(session, url):
+    top_page_pattern = 'https://atcoder.jp/contests/([^/]+)'
+    task_page_pattern = f'{top_page_pattern}/tasks/(.+)_.+'
+    if (m := re.fullmatch(top_page_pattern, url)):
+        title = m.groups()[0]
+        prefix = load_prefix(session, f'{url}/tasks')
+        url = f'{url}/tasks_print'
+    elif (m := re.fullmatch(task_page_pattern, url)):
+        title, prefix = m.groups()
+    else:
+        print('URL must meet either of the following styles:',
+              f'* {top_page_pattern}',
+              f'* {task_page_pattern}',
+              sep = '\n')
+        exit(1)
+    return url, title, prefix
 
-    if needs_login:
-        login.login(session)
+def save_contest_data(title, prefix):
+    s = f"title = '{title}'\nprefix = '{prefix}'"
+    with open('contest.py', 'w') as f:
+        f.write(s)
 
-    url = f'https://atcoder.jp/contests/{title}/tasks/{prefix}_'
+def load_prefix(session, url):
+    session.get(url)
+    url = session.soup.find('h2').parent.a.get('href')
+    prefix = re.findall('([^/]+)_', url)[0]
+    return prefix
 
-    for problem in problems.upper():
-        load_problem(session, url, problem)
-        sleep(2)
+def load_tasks(session, url):
+    session.get(url)
+    tasks = extract_tasks(session.soup)
+    return tasks
 
-    register_contest(title, prefix)
+def save_tasks(tasks):
+    loaded = []
+    failed = []
+    for task in tasks:
+        try:
+            title, samples = extract_samples(task)
+            save_samples(title, samples)
+            loaded.append(title)
+        except:
+            failed.append(title)
+    print('loaded:', *loaded)
+    print('failed:', *failed)
 
-def load_problem(session, url, problem):
-    test_home = '../test/' + problem
-    if exists(test_home):
-        rmtree(test_home)
-    mkdir(test_home)
+def extract_tasks(soup):
+    titles = soup.find_all('span', class_ = 'h2')
+    tasks = tuple(map(lambda title : title.parent, titles))
+    return tasks
 
-    parts = create_soup(session, url + problem.lower()).select('.part')
-    num = extract_and_output(parts, '入力例', test_home + '/in')
-    extract_and_output(parts, '出力例', test_home + '/out')
+def extract_samples(task):
+    title = task.span.text.strip()[0]
+    samples = task.find_all(string = re.compile('(入|出)力例 *[0-9]'))
+    samples = tuple(map(extract_sample, samples))
+    samples = tuple(zip(samples[::2], samples[1::2]))
+    return title, samples
 
-    make_list(num, test_home)
-    print(problem, num)
+def extract_sample(tag):
+    s = tag.parent.find_next_sibling('pre').text
+    return s.strip().replace('\r', '') + '\n'
 
-def create_soup(session, url):
-    try:
-        res = session.get(url)
-        res.raise_for_status()
-        return BeautifulSoup(res.text, 'lxml')
-    except Exception as e:
-        print(e)
-        sys.exit(res.status_code)
+def save_samples(title, samples):
+    root = f'../test/{title}'
+    if os.path.exists(root):
+        shutil.rmtree(root)
+    os.makedirs(f'{root}/in')
+    os.makedirs(f'{root}/out')
+    for i, (in_, out) in enumerate(samples, 1):
+        write(f'{root}/in/{i}.txt', in_)
+        write(f'{root}/out/{i}.txt', out)
+    make_list(i, root)
 
-def extract_and_output(result_set, title, path):
-    sample_iter = extract_sample(result_set, title)
-    num = output_sample(sample_iter, path)
-    return num
-
-def extract_sample(result_set, title):
-    match_title = lambda e : title == e.select_one('h3').text[:len(title)]
-    data = filter(match_title, result_set)
-    extract_sample = lambda e : e.select_one('pre').text.lstrip().replace('\r', '')
-    return map(extract_sample, data)
-
-def output_sample(sample_iter, path):
-    mkdir(path)
-    for i, sample in enumerate(sample_iter, 1):
-        file = f'{path}/{i}.txt'
-        with open(file, 'w', newline = '\n') as f:
-            f.write(sample)
-    return i
+def write(file, s):
+    with open(file, 'w', newline = '\n') as f:
+        f.write(s)
 
 def make_list(count, path):
     sample_list = list(f'{i}.txt' for i in range(1, count + 1))
     sample_list_str = '\n'.join(sample_list)
     with open(f'{path}/list.txt', 'w') as f:
         f.write(sample_list_str)
+
+def wait_before_starting(hour):
+    today = datetime.today()
+    start = datetime(today.year, today.month, today.day, hour)
+    delta = start - today
+    wait = delta.seconds + 2
+    time.sleep(wait)
 
 if __name__ == '__main__':
     main(sys.argv)

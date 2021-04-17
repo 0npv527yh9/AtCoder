@@ -23,7 +23,7 @@ def test(problem, language):
 
         if expected != actual:
             input_ = read(input_file)
-            print_diff(sample_file, input_, expected, actual)
+            print_diff(sample_file, trim(input_), trim(expected), actual)
             WA = True
 
     if WA:
@@ -42,9 +42,11 @@ def execute(language, input_file):
         'capture_output': True
     }
     res = subprocess.run(command, **option)
-    byte_res = res.stderr if res.returncode else res.stdout
-    str_res = byte_res.strip().decode().replace('\r', '')
-    return str_res
+    if res.returncode:
+        res = res.stderr.decode()
+    else:
+        res = trim(res.stdout.decode().strip().replace('\r', ''))
+    return res
 
 def print_diff(file, input_, expected, actual):
     title_tuple = ('input', 'expected', 'actual')
@@ -53,7 +55,7 @@ def print_diff(file, input_, expected, actual):
     print_title(file, '=')
     for title, content in zip(title_tuple, content_tuple):
         print_title(title)
-        print(trim(content))
+        print(content)
     print('\n')
 
 def print_title(title, style = '-', width = 30):
