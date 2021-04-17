@@ -10,10 +10,11 @@ from my_requests import AtCoderSession
 
 def main(args):
     session = AtCoderSession()
-    live = len(args) == 3
+    live = len(args) >= 3
     if live:
         start_hour = int(args[2])
-        wait_before_starting(start_hour)
+        start_minute = int(args[3]) if len(args) == 4 else 0
+        wait_before_starting(start_hour, start_minute)
     url = args[1]
     url, title, prefix = extract_contest_data(session, url)
     if live:
@@ -106,12 +107,13 @@ def make_list(count, path):
     with open(f'{path}/list.txt', 'w') as f:
         f.write(sample_list_str)
 
-def wait_before_starting(hour):
-    today = datetime.today()
-    start = datetime(today.year, today.month, today.day, hour)
-    delta = start - today
-    wait = delta.seconds + 2
-    time.sleep(wait)
+def wait_before_starting(hour, minute):
+    for i in range(2):
+        today = datetime.today()
+        start = datetime(today.year, today.month, today.day, hour, minute)
+        delta = start - today
+        wait = max(4, delta.seconds)
+        time.sleep(wait)
 
 if __name__ == '__main__':
     main(sys.argv)
