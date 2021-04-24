@@ -4,7 +4,6 @@ import shutil
 import re
 import time
 from datetime import datetime
-import webbrowser
 
 from my_requests import AtCoderSession
 
@@ -17,8 +16,6 @@ def main(args):
         wait_before_starting(start_hour, start_minute)
     url = args[1]
     url, title, prefix = extract_contest_data(session, url)
-    if live:
-        webbrowser.open(url)
     save_contest_data(title, prefix)
 
     tasks = load_tasks(session, url)
