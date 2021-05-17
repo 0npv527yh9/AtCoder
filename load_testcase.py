@@ -80,7 +80,7 @@ def extract_samples(task):
     return title, samples
 
 def extract_sample(tag):
-    s = tag.parent.find_next_sibling('pre').text
+    s = tag.parent.parent.find('pre').text
     return s.strip().replace('\r', '') + '\n'
 
 def save_samples(title, samples):
