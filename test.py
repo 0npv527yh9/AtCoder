@@ -1,6 +1,9 @@
 import sys
+import shutil
 import subprocess
 from config import language_dict
+
+col, row = shutil.get_terminal_size()
 
 def main(args):
     problem = args[1].upper()
@@ -58,14 +61,14 @@ def print_diff(file, input_, expected, actual):
         print(content)
     print('\n')
 
-def print_title(title, style = '-', width = 30):
-    w = max(0, width - len(title))
+def print_title(title, style = '-'):
+    w = max(0, col - len(title))
     l = w // 2
     r = w - l
     s = style * l + title + style * r
     print(s)
 
-def trim(s, row = 30, col = 30):
+def trim(s):
     l = s.split('\n')
     h = row >> 1
     l = l[:h] + ['...'] + l[-h:] if row < len(l) else l
