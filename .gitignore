@@ -3,3 +3,4 @@
 /trial
 contest.py
 *.pickle
+create_testcase.py
