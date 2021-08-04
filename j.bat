@@ -1,7 +1,7 @@
 @echo off
 
 if "%1" == "" (
-  call java -cp ..\src Main < ..\src\in.txt
+  call javac -d ..\build ..\src\Main.java && java -cp ..\build Main < ..\src\in.txt
 ) else (
   python atcoder.py %1 java "%2"
 )
