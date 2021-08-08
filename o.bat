@@ -1,3 +1,3 @@
 @echo off
-call atom ..\src\Main.java
-call atom ..\src\main.py
+call code ..\src\Main.java
+call code ..\src\main.py
