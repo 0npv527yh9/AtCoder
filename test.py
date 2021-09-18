@@ -70,10 +70,11 @@ def print_title(title, style = '-'):
 
 def trim(s):
     l = s.split('\n')
-    h = row >> 1
+    h = row - 1 >> 1
     l = l[:h] + ['...'] + l[-h:] if row < len(l) else l
-    w = col >> 1
-    l = list(map(lambda s : s if col >= len(s) else s[:w] + '...' + s[-w:], l))
+    lw = col - 3 >> 1
+    rw = col - 3 - lw
+    l = list(map(lambda s : s if col >= len(s) else s[:lw] + '...' + s[-rw:], l))
     s = '\n'.join(l)
     return s
 
