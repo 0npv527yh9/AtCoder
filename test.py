@@ -15,7 +15,7 @@ def test(problem, language):
 
     sample_file_list = read(test_home + '/list.txt').split('\n')
 
-    WA = False
+    AC = True
 
     for sample_file in sample_file_list:
         input_file = test_home + '/in/' + sample_file
@@ -27,11 +27,9 @@ def test(problem, language):
         if expected != actual:
             input_ = read(input_file)
             print_diff(sample_file, trim(input_), trim(expected), actual)
-            WA = True
+            AC = False
 
-    if WA:
-        sys.exit(0)
-    else:
+    if AC:
         print('AC')
 
 def read(file):
