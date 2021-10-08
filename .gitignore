@@ -4,3 +4,4 @@
 contest.py
 *.pickle
 create_testcase.py
+*.md
