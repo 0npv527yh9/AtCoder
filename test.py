@@ -1,3 +1,4 @@
+import re
 import sys
 import shutil
 import subprocess
@@ -46,7 +47,9 @@ def execute(language, input_file):
     if res.returncode:
         res = res.stderr.decode()
     else:
-        res = trim(res.stdout.decode().strip().replace('\r', ''))
+        res = res.stdout.decode()
+        res = re.sub(' *\r?\n', '\n', res).strip()
+        res = trim(res)
     return res
 
 def print_diff(file, input_, expected, actual):
