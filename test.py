@@ -9,7 +9,8 @@ col, row = shutil.get_terminal_size()
 def main(args):
     problem = args[1].upper()
     language = args[2].lower()
-    test(problem, language)
+    AC = test(problem, language)
+    print('AC')
 
 def test(problem, language):
     test_home = '../test/' + problem
@@ -29,9 +30,8 @@ def test(problem, language):
             input_ = read(input_file)
             print_diff(sample_file, trim(input_), trim(expected), actual)
             AC = False
-
-    if AC:
-        print('AC')
+    
+    return AC
 
 def read(file):
     with open(file) as f:

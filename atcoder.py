@@ -7,11 +7,13 @@ import submit
 def main(args):
     problem, language, sub = args[1:]
 
-    if sub != 'f':
+    if sub == 'f':
+        sub = True
+    else:
         compile.compile(language)
-        test.test(problem, language)
+        sub = test.test(problem, language)
 
-    if sub == '' or sub == 'f':
+    if sub:
         submit.submit(problem, language)
 
 if __name__ == '__main__':
