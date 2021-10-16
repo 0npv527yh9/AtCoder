@@ -22,7 +22,7 @@ def main():
             test.print_diff(input_file, input_, ans_output, main_output)
             break
         else:
-            print('\r', i, sep = '', end = '')
+            print(i, end = '\r')
 
 if __name__ == '__main__':
     main()
