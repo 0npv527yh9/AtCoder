@@ -73,7 +73,7 @@ def extract_tasks(soup):
     return tasks
 
 def extract_samples(task):
-    title = task.span.text.strip()[0]
+    title = task.span.text.strip().split()[0]
     samples = task.find_all(string = re.compile('\s*(入|出)力例 *[0-9]\s*$'))
     samples = tuple(map(extract_sample, samples))
     samples = tuple(zip(samples[::2], samples[1::2]))
