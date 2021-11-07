@@ -47,11 +47,11 @@ def execute(language, input_file):
     }
     res = subprocess.run(command, **option)
     if res.returncode:
-        res = res.stderr.decode()
+        res = res.stdout.decode() + '\n' + res.stderr.decode()
     else:
         res = res.stdout.decode()
-        res = re.sub(' *\r?\n', '\n', res).strip()
-    return res
+        res = re.sub(' *\r?\n', '\n', res)
+    return res.strip()
 
 def print_diff(file, input_, expected, actual):
     title_tuple = ('input', 'expected', 'actual')
