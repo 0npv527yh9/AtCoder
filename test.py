@@ -27,7 +27,7 @@ def test(problem, language):
 
         if expected != actual:
             input_ = read(input_file)
-            print_diff(sample_file, trim(input_), trim(expected), actual)
+            print_diff(sample_file, trim(input_), trim(expected), trim(actual))
             AC = False
     
     if AC:
@@ -51,7 +51,6 @@ def execute(language, input_file):
     else:
         res = res.stdout.decode()
         res = re.sub(' *\r?\n', '\n', res).strip()
-        res = trim(res)
     return res
 
 def print_diff(file, input_, expected, actual):
