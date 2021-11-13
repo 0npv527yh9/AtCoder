@@ -1,6 +1,6 @@
 @echo off
-if exist ..\src\%1 (
-    code ..\src\%1
-) else (
+if "%1" == "" (
     cd ..\src
+) else if exist ..\src\%1 (
+    code ..\src\%1
 )
