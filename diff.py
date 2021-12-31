@@ -23,7 +23,7 @@ def main():
 
         AC = not main_error and (
             main_output == ans_output
-            or simulate.simulate(input_, main_output)
+            or simulate.simulate(input_, main_output)[0]
         )
         if AC:
             print(i, end = '\r')
