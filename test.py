@@ -10,12 +10,12 @@ col, row = shutil.get_terminal_size()
 
 
 def main():
-    problem = sys.argv[1].upper()
-    language = sys.argv[2].lower()
-    test(problem, language)
+    language = sys.argv[1].lower()
+    problem = sys.argv[2].upper()
+    test(language, problem)
 
 
-def test(problem, language):
+def test(language, problem):
     test_home = '../test/' + problem
 
     sample_file_list = sorted(os.listdir(test_home + '/in'))
