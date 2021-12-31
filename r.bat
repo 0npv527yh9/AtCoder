@@ -1,7 +1,10 @@
 @echo off
 
+set rust=C:\software\atcoder\src\rust
+
 if "%1" == "" (
-  rustc ..\src\rust\src\main.rs -o ..\build\rust.exe && ..\build\rust.exe < ..\src\in.txt
+  cargo run -q --manifest-path %rust%\Cargo.toml < ..\src\in.txt
 ) else (
-    python atcoder.py %1 rust "%2"
+  cp %rust%\src\main.rs ..\src\main.rs > nul
+  python atcoder.py rust %1 %2 %3 %4 %5 %6 %7 %8 %9
 )
