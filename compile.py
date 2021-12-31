@@ -1,10 +1,13 @@
-import sys
 import subprocess
+import sys
+
 from config import language_dict
 
-def main(args):
-    language = args[1]
+
+def main():
+    language = sys.argv[1]
     compile(language)
+
 
 def compile(language):
     command = language_dict[language]['compile']
@@ -13,5 +16,6 @@ def compile(language):
         if res.returncode:
             sys.exit(res.returncode)
 
+
 if __name__ == '__main__':
-    main(sys.argv)
+    main()
