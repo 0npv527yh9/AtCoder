@@ -16,14 +16,14 @@ def main():
         start_minute = int(sys.argv[3]) if len(sys.argv) == 4 else 0
         wait_before_starting(start_hour, start_minute)
     url = sys.argv[1]
-    url, title, prefix = extract_contest_data(session, url)
+    url, title, prefix = extract_contest_data(url)
     save_contest_data(title, prefix)
 
     tasks = load_tasks(session, url)
     save_tasks(tasks)
 
 
-def extract_contest_data(session, url):
+def extract_contest_data(url):
     top_page_pattern = 'https://atcoder.jp/contests/([^/]+)'
     task_page_pattern = f'{top_page_pattern}/tasks/(.+)_.+'
     m = re.fullmatch(top_page_pattern, url)
@@ -35,10 +35,9 @@ def extract_contest_data(session, url):
         if m:
             title, prefix = m.groups()
         else:
-            print('URL must meet either of the following styles:',
-                  f'* {top_page_pattern}',
-                  f'* {task_page_pattern}',
-                  sep = '\n')
+            print('URL must meet either of the following styles:')
+            print(f'* {top_page_pattern}')
+            print(f'* {task_page_pattern}')
             exit(1)
     return url, title, prefix
 
@@ -65,8 +64,9 @@ def save_tasks(tasks):
     loaded = []
     failed = []
     for task in tasks:
+        title = task.span.text.strip().split()[0]
         try:
-            title, samples = extract_samples(task)
+            samples = extract_samples(task)
             save_samples(title, samples)
             loaded.append(title)
         except:
@@ -76,11 +76,10 @@ def save_tasks(tasks):
 
 
 def extract_samples(task):
-    title = task.span.text.strip().split()[0]
     samples = task.find_all(string = re.compile('\s*(入|出)力例 *[0-9]\s*$'))
     samples = tuple(map(extract_sample, samples))
     samples = tuple(zip(samples[::2], samples[1::2]))
-    return title, samples
+    return samples
 
 
 def extract_sample(tag):
@@ -105,12 +104,11 @@ def write(file, s):
 
 
 def wait_before_starting(hour, minute):
-    for i in range(2):
-        today = datetime.today()
-        start = datetime(today.year, today.month, today.day, hour, minute)
-        delta = start - today
-        wait = max(4, delta.seconds)
-        time.sleep(wait)
+    today = datetime.today()
+    start = datetime(today.year, today.month, today.day, hour, minute)
+    delta = start - today
+    wait = max(0, delta.seconds) + 10
+    time.sleep(wait)
 
 
 if __name__ == '__main__':
