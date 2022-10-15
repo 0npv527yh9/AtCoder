@@ -33,7 +33,7 @@ def load_option_dict(option_dict, args):
             option_dict['task'] = next(args)
         elif mode == 'p':
             option_dict['prefix'] = next(args)
-            save_contest_data(title, option_dict['prefix'])
+            save_contest_data(option_dict['title'], option_dict['prefix'])
         elif mode == 'f':
             option_dict['test'] = False
         elif mode == 'n':
