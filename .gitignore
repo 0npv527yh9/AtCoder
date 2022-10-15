@@ -4,7 +4,7 @@
 contest.py
 *.pickle
 create_testcase.py
-*.md
+todo.md
 *.ipynb
 simulate.py
 private.py
