@@ -8,3 +8,4 @@ create_testcase.py
 *.ipynb
 simulate.py
 private.py
+*.bat
