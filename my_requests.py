@@ -1,11 +1,11 @@
-import time
 import pickle
-import re
+import time
 
-from requests import Session
 from bs4 import BeautifulSoup
+from requests import Session
 
-from config import login_data
+from private import login_data
+
 
 class AtCoderSession(Session):
     __INTERVAL = 10
@@ -62,8 +62,3 @@ class AtCoderSession(Session):
         res = super().post(url, data)
         res.raise_for_status()
         print(res.reason)
-
-    def write(self, file):
-        s = str(self.soup)
-        with open(file, 'w', encoding = 'utf-8') as f:
-            f.write(s)
