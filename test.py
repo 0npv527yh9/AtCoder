@@ -31,8 +31,10 @@ def test(language, problem):
 
         if expected != output:
             input_ = read(input_file)
-            print_diff(sample_file, trim(input_), trim(expected),
-                       f'{trim(output)}\n\n{error}')
+            print_diff(
+                sample_file, trim(input_), trim(expected),
+                f'{trim(output)}\n\n{error}'
+            )
             AC = False
             if error:
                 break
@@ -75,14 +77,18 @@ def print_title(title, style = '-'):
 
 
 def trim(s):
-    l = s.split('\n')
+    rows = s.split('\n')
     h = row - 1 >> 1
-    l = l[:h] + ['...'] + l[-h:] if row < len(l) else l
+    rows = rows[:h] + ['...'] + rows[-h:] if row < len(rows) else rows
     lw = col - 3 >> 1
     rw = col - 3 - lw
-    l = list(map(lambda s: s
-                 if col >= len(s) else s[:lw] + '...' + s[-rw:], l))
-    s = '\n'.join(l)
+    rows = list(
+        map(
+            lambda row: row
+            if col >= len(row) else row[:lw] + '...' + row[-rw:], rows
+        )
+    )
+    s = '\n'.join(rows)
     return s
 
 
