@@ -39,7 +39,8 @@ def load_option_dict(option_dict, args):
         elif mode == 'n':
             option_dict['submit'] = False
         else:
-            raise Exception('Invalid option: ' + mode)
+            print('Invalid option: ' + mode)
+            exit(0)
 
 
 if __name__ == '__main__':
