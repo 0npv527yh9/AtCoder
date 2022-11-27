@@ -13,7 +13,7 @@ def main():
     option_dict.update(language = language, task = task)
     load_option_dict(option_dict, sys.argv[3:])
 
-    # Compile
+    # Compile and Test
     if option_dict['test']:
         compile.compile(language)
         AC = test.test(language, task)
