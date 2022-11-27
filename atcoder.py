@@ -19,6 +19,7 @@ def main():
 
     if option_dict['submit']:
         submit.submit(option_dict)
+        print('Submitted')
 
 
 def load_option_dict(option_dict, args):
