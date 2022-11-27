@@ -10,11 +10,13 @@ from my_requests import AtCoderSession
 
 def main():
     session = AtCoderSession()
+
     live = len(sys.argv) >= 3
     if live:
         start_hour = int(sys.argv[2])
         start_minute = int(sys.argv[3]) if len(sys.argv) == 4 else 0
         wait_before_starting(start_hour, start_minute)
+
     url = sys.argv[1]
     url, title, prefix = extract_contest_data(url)
     save_contest_data(title, prefix)
