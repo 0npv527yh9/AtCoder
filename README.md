@@ -3,11 +3,13 @@
 - [自動テスト](#テスト提出)
 - [提出](#テスト提出)
 
-# 使用言語/ライブラリ
+# 環境
+- `OS`: Windows, Mac, Linux等
 - `Python3`
     - `requests`
     - `bs4`
     - `lxml`
+
 
 # ローカルでの階層
 <pre>
@@ -33,25 +35,32 @@
     ```
     - `Rust`を使わない場合は，`''`でよい．
 
-## ログイン
-```shell
-$ python login.py
-```
-- AtCoderのサイトにアクセスできるようにする．
-- `cookies.pickle`にクッキーが保存され，次回以降はそれを読み込む．
-
 
 # サンプルデータのダウンロード
 ```shell
-$ python3 load_testcase.py [url] [hour] [minute] 
+$ python load_testcase.py [url] [hour] [minute] 
 ```
 - `url`: コンテストのトップページ，または問題ページのURL．
-    - 例: `https://atcoder.jp/contests/abc272`
-    - 例: `https://atcoder.jp/contests/abc272/tasks/abc272_a`
+    - 例: `https://atcoder.jp/contests/abc272` (トップページ)
+    - 例: `https://atcoder.jp/contests/abc272/tasks/abc272_a` (問題Aのページ)
     - トップページの場合，すべての問題がダウンロードされる．
-- `hour`, `minute`: 開始時刻．
-    - **省略可能**．
-    - デフォルトは`21 00`．
+- `hour`, `minute`: ダウンロードを開始する時刻．
+    - **省略可能**．省略すると即時ダウンロード開始．
+    - `minute`のデフォルトは，`0`．
+
+## 例: これから開始されるコンテストに参加する場合
+```shell
+$ python load_testcase https://atcoder.jp/contests/abc272 21
+```
+- 21:00に始まるコンテストに参加予定で，21:00より前に実行する場合
+
+## 例: すでに開始されたコンテストの場合
+```shll
+$ python load_testcase https://atcoder.jp/contests/abc272
+```
+- すぐにダウンロードが始まる．
+- コンテスト開始後や過去問を解く場合
+
 
 # テスト/提出
 - コンパイル，テストし，全て通れば，提出する．
