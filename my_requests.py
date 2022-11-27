@@ -15,13 +15,13 @@ class AtCoderSession(Session):
         self.__timestamp = 0
         self.soup: BeautifulSoup
         try:
-            self.__load()
+            self.__load_cookies()
         except:
             self.__login()
 
     def __del__(self):
         try:
-            self.__save()
+            self.__save_cookies()
         except:
             pass
 
@@ -38,13 +38,13 @@ class AtCoderSession(Session):
     def __find_csrf_token(self):
         return self.soup.find(attrs = {'name': 'csrf_token'}).get('value')
 
-    def __load(self):
+    def __load_cookies(self):
         with open(AtCoderSession.__COOKIES_PICKLE, 'rb') as f:
             data = pickle.load(f)
         self.cookies.update(data[0])
         self.csrf_token = data[1]
 
-    def __save(self):
+    def __save_cookies(self):
         data = (self.cookies, self.csrf_token)
         with open(AtCoderSession.__COOKIES_PICKLE, 'wb') as f:
             pickle.dump(data, f)
