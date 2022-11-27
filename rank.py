@@ -6,11 +6,11 @@ from contest import prefix, title
 
 
 def main(args):
-    problem = args[1].lower()
+    task = args[1].lower()
     language = args[2].lower()
     languageID = language_dict[language]['id']
 
-    url = f'https://atcoder.jp/contests/{title}/submissions?f.Language={languageID}&f.Status=AC&f.Task={prefix}_{problem}&orderBy=time_consumption'
+    url = f'https://atcoder.jp/contests/{title}/submissions?f.Language={languageID}&f.Status=AC&f.Task={prefix}_{task}&orderBy=time_consumption'
     webbrowser.open(url)
 
 
