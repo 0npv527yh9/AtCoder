@@ -29,6 +29,7 @@ def test(language, problem):
         output, error = execute(language, input_file)
         expected = read(output_file)
 
+        # Print diff if the test failed.
         if expected != output:
             input_ = read(input_file)
             print_diff(

@@ -18,10 +18,12 @@ def main():
         start_minute = int(sys.argv[3]) if len(sys.argv) == 4 else 0
         wait_before_starting(start_hour, start_minute)
 
+    # Load and save meta-information.
     url = sys.argv[1]
     url, title, prefix = extract_contest_data(url)
     save_contest_data(title, prefix)
 
+    # Load and save testcases.
     tasks = load_tasks(session, url)
     save_tasks(tasks)
 
