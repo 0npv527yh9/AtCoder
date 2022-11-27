@@ -74,6 +74,7 @@ $ python load_testcase https://atcoder.jp/contests/abc272
 
 # テスト/提出
 - コンパイル，テストし，全て通れば，提出する．
+- 自分の提出画面を開く．
 ```shell
 $ python atcoder.py [language] [task] [option]
 ```
@@ -86,6 +87,32 @@ $ python atcoder.py [language] [task] [option]
     - `n`: テストに通っても提出しない．
     - `f`: 強制的に提出する．
 - `language`, `task`は，大文字小文字を区別しない．
+
+## 例: テストに通った場合
+```shell
+$ python atcoder.py python A
+AC
+Submitted
+```
+- その後，自分の提出結果のページが開く．
+
+
+## 例: テストに通らなかった場合
+```shell
+$ python atcoder.py python A
+===============1.txt===============
+---------------input---------------
+vvwvw
+--------------expected-------------
+7
+---------------actual--------------
+5
+```
+- 不正解のケースについて，以下を表示する．
+    - `input`: 入力
+    - `expected`: 期待された出力
+    - `actual`: 実際の出力
+
 
 # 実行時間が短い順に提出結果を表示
 ```shell
