@@ -44,7 +44,7 @@ $ cd bin
     ```python
     login_data = {'username': 'ユーザーネーム', 'password': 'パスワード'}
     ```
-
+- このファイルは，Gitの管理対象外．
 
 # テストケースのダウンロード
 ```shell
@@ -88,7 +88,7 @@ $ python atcoder.py [language] [task] [option]
     - `f`: 強制的に提出する．
 - `language`, `task`は，大文字小文字を区別しない．
 
-## 例: テストに通った場合
+## 例: テストに通り，提出される場合
 ```shell
 $ python atcoder.py python A
 AC
