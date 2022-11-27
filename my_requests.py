@@ -6,7 +6,7 @@ from requests import Session
 
 
 class AtCoderSession(Session):
-    __INTERVAL = 1
+    __INTERVAL = 1  # Interval between GET methods
     __COOKIES_PICKLE = 'cookies.pickle'
     __LOGIN_URL = 'https://atcoder.jp/login'
 
@@ -55,6 +55,7 @@ class AtCoderSession(Session):
         self.soup = BeautifulSoup(res.text, 'lxml')
         return res
 
+    # Wait until __INTERVAL seconds has passed since the last GET method.
     def __wait(self):
         now = time.time()
         dt = now - self.__timestamp
