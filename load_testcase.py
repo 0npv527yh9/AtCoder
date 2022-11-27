@@ -11,6 +11,7 @@ from my_requests import AtCoderSession
 def main():
     session = AtCoderSession()
 
+    # Wait until the contest starts if you participate it in.
     live = len(sys.argv) >= 3
     if live:
         start_hour = int(sys.argv[2])
@@ -25,9 +26,11 @@ def main():
     save_tasks(tasks)
 
 
+# Extract contest meta-information from url.
 def extract_contest_data(url):
     top_page_pattern = 'https://atcoder.jp/contests/([^/]+)'
     task_page_pattern = f'{top_page_pattern}/tasks/(.+)_.+'
+
     m = re.fullmatch(top_page_pattern, url)
     if m:
         title = prefix = m.groups()[0]
@@ -41,27 +44,32 @@ def extract_contest_data(url):
             print(f'* {top_page_pattern}')
             print(f'* {task_page_pattern}')
             exit(1)
+
     return url, title, prefix
 
 
+# Save contest meta-information in "contest.py".
 def save_contest_data(title, prefix):
     s = f"title = '{title}'\nprefix = '{prefix}'"
     with open('contest.py', 'w') as f:
         f.write(s)
 
 
+# GET and parse the tasks page.
 def load_tasks(session, url):
     session.get(url)
     tasks = extract_tasks(session.soup)
     return tasks
 
 
+# Extract tasks from BeautifulSoup
 def extract_tasks(soup):
     titles = soup.find_all('span', class_ = 'h2')
     tasks = tuple(map(lambda title: title.parent, titles))
     return tasks
 
 
+# Save the testcases.
 def save_tasks(tasks):
     loaded = []
     failed = []
@@ -77,6 +85,7 @@ def save_tasks(tasks):
     print('failed:', *failed)
 
 
+# Extract the testcases from the task html.
 def extract_samples(task):
     samples = task.find_all(string = re.compile('\s*(入|出)力例 *[0-9]\s*$'))
     samples = tuple(map(extract_sample, samples))
@@ -89,6 +98,7 @@ def extract_sample(tag):
     return s.strip().replace('\r', '') + '\n'
 
 
+# Save the testcases.
 def save_samples(title, samples):
     root = f'../test/{title}'
     if os.path.exists(root):
