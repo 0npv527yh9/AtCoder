@@ -52,6 +52,9 @@ class AtCoderSession(Session):
     def get(self, url):
         self.__wait()
         res = super().get(url)
+        if not res.ok:
+            print(res.reason + ':', res.url)
+            exit(0)
         self.soup = BeautifulSoup(res.text, 'lxml')
         return res
 
