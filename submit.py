@@ -40,8 +40,7 @@ def submit(option_dict):
 
 # Load the source code written in "language".
 def load_code(language):
-    extension = language_dict[language]['extension']
-    file = f'{source_path}/main.{extension}'
+    file = language_dict[language]['file']
     with open(file, encoding = 'utf-8') as f:
         code = f.read()
     return code

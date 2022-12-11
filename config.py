@@ -1,50 +1,63 @@
 source_path = '../src'
+file_prefix = f'{source_path}/main.'
 build_path = '../build'
 execute_command = f'{build_path}/a.exe'
+
+from language_id import language_id
 
 language_dict = {
     'c':
         {
-            'extension': 'c',
-            'compile': ['gcc', f'{source_path}/main.c', '-o', execute_command],
+            'file': file_prefix + 'c',
+            'compile': ['gcc', file_prefix + 'c', '-o', execute_command],
             'execute': execute_command,
-            'id': '4001'
+            'id': language_id['C']
         },
     'c++':
         {
-            'extension': 'cpp',
-            'compile':
-                ['g++', f'{source_path}/main.cpp', '-o', execute_command],
+            'file': file_prefix + 'cpp',
+            'compile': ['g++', file_prefix + 'cpp', '-o', execute_command],
             'execute': execute_command,
-            'id': '4003'
+            'id': language_id['C++']
         },
     'java':
         {
-            'extension': 'java',
-            'compile': ['javac', '-d', build_path, f'{source_path}/Main.java'],
+            'file': file_prefix + 'java',
+            'compile': ['javac', '-d', build_path, file_prefix + 'java'],
             'execute': ['java', '-cp', build_path, 'Main'],
-            'id': '4005'
+            'id': language_id['Java']
         },
     'python':
         {
-            'extension': 'py',
+            'file': file_prefix + 'py',
             'compile': None,
-            'execute': ['python', f'{source_path}/main.py'],
-            'id': '4006'
+            'execute': ['python', file_prefix + 'py'],
+            'id': language_id['Python']
         },
     'ocaml':
         {
-            'extension': 'ml',
+            'file': file_prefix + 'ml',
             'compile': None,
-            'execute': ['ocaml', f'{source_path}/main.ml'],
-            'id': '4039'
+            'execute': ['ocaml', file_prefix + 'ml'],
+            'id': language_id['OCaml']
         },
     'pypy':
         {
-            'extension': 'py',
+            'file': file_prefix + 'py',
             'compile': None,
-            'execute': ['pypy', f'{source_path}/main.py'],
-            'id': '4047'
+            'execute': ['pypy', file_prefix + 'py'],
+            'id': language_id['PyPy3']
+        },
+    'rust':
+        {
+            'file': f'{source_path}/rust/src/main.rs',
+            'compile':
+                [
+                    'cargo', 'build', '--quiet', '--manifest-path',
+                    f'{source_path}/rust/Cargo.toml'
+                ],
+            'execute': [f'{source_path}/rust/target/debug/rust.exe'],
+            'id': language_id['Rust']
         }
 }
 
