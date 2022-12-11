@@ -1,17 +1,23 @@
+import json
 import sys
 import test
 
 import compile
+import config
 import submit
-from config import option_dict
-from load_testcase import save_contest_data
 
 
 def main():
     # Load info
     language, task = sys.argv[1:3]
-    option_dict.update(language = language, task = task)
-    load_option_dict(option_dict, sys.argv[3:])
+    option_dict = {
+        'language': language,
+        'task': task,
+        'test': True,
+        'submit': True,
+        'contest_info': json.load(open(config.task_info_file))[task]
+    }
+    load_options(option_dict, sys.argv[3:])
 
     # Compile and Test
     if option_dict['test']:
@@ -25,7 +31,7 @@ def main():
         print('Submitted')
 
 
-def load_option_dict(option_dict, args):
+def load_options(option_dict, args):
     args = iter(args)
     while True:
         try:
@@ -35,9 +41,6 @@ def load_option_dict(option_dict, args):
 
         if mode == 't':
             option_dict['task'] = next(args)
-        elif mode == 'p':
-            option_dict['prefix'] = next(args)
-            save_contest_data(option_dict['title'], option_dict['prefix'])
         elif mode == 'f':
             option_dict['test'] = False
         elif mode == 'n':

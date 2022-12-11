@@ -1,7 +1,6 @@
 *.txt
 /__pycache__
 /trial
-contest.py
 *.pickle
 create_testcase.py
 todo.md
@@ -9,3 +8,4 @@ todo.md
 simulate.py
 private.py
 *.bat
+*.json

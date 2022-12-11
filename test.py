@@ -9,12 +9,6 @@ from config import language_dict
 col, row = shutil.get_terminal_size()
 
 
-def main():
-    language = sys.argv[1].lower()
-    task = sys.argv[2].upper()
-    test(language, task)
-
-
 def test(language, task):
     test_home = '../test/' + task
 
@@ -91,7 +85,3 @@ def trim(s):
     )
     s = '\n'.join(rows)
     return s
-
-
-if __name__ == '__main__':
-    main()

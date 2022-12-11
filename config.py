@@ -61,6 +61,4 @@ language_dict = {
         }
 }
 
-from contest import title, prefix
-
-option_dict = {'test': True, 'submit': True, 'title': title, 'prefix': prefix}
+task_info_file = 'task_info.json'

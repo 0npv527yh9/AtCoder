@@ -1,14 +1,8 @@
 import sys
 import webbrowser
 
-from config import language_dict, source_path, option_dict
+from config import language_dict
 from my_requests import AtCoderSession
-
-
-def main():
-    language, task = sys.argv[1:3]
-    option_dict.update(language = language, task = task)
-    submit(option_dict)
 
 
 def submit(option_dict):
@@ -16,11 +10,12 @@ def submit(option_dict):
 
     language = option_dict['language']
     code = load_code(language)
+    contest_info = option_dict['contest_info']
 
     # submission data
     data = {
         'data.TaskScreenName':
-            option_dict['prefix'] + '_' + option_dict['task'],
+            contest_info['prefix'] + '_' + option_dict['task'],
         'data.LanguageId':
             language_dict[language]['id'],
         'sourceCode':
@@ -30,7 +25,7 @@ def submit(option_dict):
     }
 
     # submit
-    title = option_dict['title']
+    title = contest_info['title']
     url = f'https://atcoder.jp/contests/{title}/submit'
     session.post(url, data)
 
@@ -49,7 +44,3 @@ def load_code(language):
 def open_submissions_page(title):
     url = f'https://atcoder.jp/contests/{title}/submissions/me'
     webbrowser.open(url)
-
-
-if __name__ == '__main__':
-    main()

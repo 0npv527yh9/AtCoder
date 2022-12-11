@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import shutil
@@ -5,6 +6,7 @@ import sys
 import time
 from datetime import datetime
 
+import config
 from my_requests import AtCoderSession
 
 
@@ -21,11 +23,10 @@ def main():
     # Load and save meta-information.
     url = sys.argv[1]
     url, title, prefix = extract_contest_data(url)
-    save_contest_data(title, prefix)
 
     # Load and save testcases.
     tasks = load_tasks(session, url)
-    save_tasks(tasks)
+    save_tasks(tasks, title, prefix)
 
 
 # Extract contest meta-information from url.
@@ -50,13 +51,6 @@ def extract_contest_data(url):
     return url, title, prefix
 
 
-# Save contest meta-information in "contest.py".
-def save_contest_data(title, prefix):
-    s = f"title = '{title}'\nprefix = '{prefix}'"
-    with open('contest.py', 'w') as f:
-        f.write(s)
-
-
 # GET and parse the tasks page.
 def load_tasks(session, url):
     session.get(url)
@@ -72,7 +66,7 @@ def extract_tasks(soup):
 
 
 # Save the testcases.
-def save_tasks(tasks):
+def save_tasks(tasks, contest_title, contest_prefix):
     loaded = []
     failed = []
     for task in tasks:
@@ -83,8 +77,25 @@ def save_tasks(tasks):
             loaded.append(title)
         except:
             failed.append(title)
+
+    save_contest_data(contest_title, contest_prefix, loaded)
     print('loaded:', *loaded)
     print('failed:', *failed)
+
+
+# Save contest meta-information in "contest.py".
+def save_contest_data(title, prefix, tasks):
+    try:
+        d = json.load(open(config.task_info_file))
+    except:
+        d = {}
+    for task in tasks:
+        task = task.lower()
+        if task not in d:
+            d[task] = {}
+        d[task]['title'] = title
+        d[task]['prefix'] = prefix
+    json.dump(d, open(config.task_info_file, 'w'))
 
 
 # Extract the testcases from the task html.
