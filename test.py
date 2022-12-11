@@ -11,12 +11,12 @@ col, row = shutil.get_terminal_size()
 
 def main():
     language = sys.argv[1].lower()
-    problem = sys.argv[2].upper()
-    test(language, problem)
+    task = sys.argv[2].upper()
+    test(language, task)
 
 
-def test(language, problem):
-    test_home = '../test/' + problem
+def test(language, task):
+    test_home = '../test/' + task
 
     sample_file_list = sorted(os.listdir(test_home + '/in'))
 
@@ -29,6 +29,7 @@ def test(language, problem):
         output, error = execute(language, input_file)
         expected = read(output_file)
 
+        # Print diff if the test failed.
         if expected != output:
             input_ = read(input_file)
             print_diff(

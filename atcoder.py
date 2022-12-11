@@ -8,15 +8,18 @@ from load_testcase import save_contest_data
 
 
 def main():
+    # Load info
     language, task = sys.argv[1:3]
     option_dict.update(language = language, task = task)
     load_option_dict(option_dict, sys.argv[3:])
 
+    # Compile and Test
     if option_dict['test']:
         compile.compile(language)
         AC = test.test(language, task)
         option_dict['submit'] &= AC
 
+    # Submit
     if option_dict['submit']:
         submit.submit(option_dict)
         print('Submitted')
